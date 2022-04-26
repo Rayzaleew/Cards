@@ -1,111 +1,16 @@
 ﻿#include "Game.h"
 
+
+
 class Game {
+	
 private:
-	struct cards {
-		string names;
-		string suits;
-		int values;
-	};
+	
 	vector <cards> deck;
 	vector <string> names = { "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 	vector <string> suits = { "Пики", "Крести", "Черви", "Буби" };
-	vector <cards> alisa_hand;
-	vector <cards> bob_hand;
 	vector <cards> table;
 	string trump;
-
-	void start() {
-		string name;
-		int toss_checker = 0;
-		building();
-		shuffle();
-		trump_pick();
-		draft(alisa_hand);
-		draft(bob_hand);
-		
-		if (deque(alisa_hand) < deque(bob_hand)) {
-			name = "Боб";
-		}
-		else {
-			name = "Алиса";
-		}
-		while (true) {
-			if (alisa_hand.size() == 0) {
-				cout << "Первый игрок победил! " << endl;
-				break;
-			} else if (bob_hand.size() == 0) {
-				cout << "Второй игрок победил! " << endl;
-				break;
-			}
-			else if ((alisa_hand.size() == 0) && (bob_hand.size() == 0)) {
-				cout << "Ничья! " << endl;
-			}
-			
-			if (name == "Алиса") {
-				while (true) {
-					if (toss_checker == 0) {
-						move(alisa_hand, name);
-						name = "Боб";
-					}
-					if (counter_move(bob_hand, name)) {
-						if (toss(alisa_hand) != 1) {
-							table.clear();
-							toss_checker = 0;
-							break;
-						}
-						else {
-							toss_checker = 1;
-						}
-					}
-					else {
-						for (int i = 0; i < table.size(); i++) {
-							bob_hand.push_back(table.at(i));
-						}
-						name = "Алиса";
-						toss_checker = 0;
-						table.clear();
-						break;
-					}
-				}
-				
-			}
-			else if (name == "Боб") {
-				if (toss_checker == 0) {
-					move(bob_hand, name);
-					name = "Алиса";
-				}
-				while (true) {
-					if (counter_move(alisa_hand, name)) {
-						if (toss(bob_hand) == 0) {
-							table.clear();
-							break;
-						}
-						
-					}
-					else {
-						for (int i = 0; i < table.size(); i++) {
-							alisa_hand.push_back(table.at(i));
-							
-						}
-						name = "Боб";
-						toss_checker = 0;
-						table.clear();
-						break;
-					}
-				}
-				
-			} 
-			if (deck.size() != 0) {
-				draft(alisa_hand);
-			}
-			if (deck.size() != 0) {
-				draft(bob_hand);
-			}
-		}
-	}
-
-		
 
 	void building() {
 		
@@ -253,19 +158,108 @@ private:
 		
 	}
 	public: 
-		static Game launch() {
-			static Game launcher;
-			launcher.start();
-			return launcher;
+		void start(Player &first_player, Player &second_player) {
+			string name;
+			int toss_checker = 0;
+			building();
+			shuffle();
+			trump_pick();
+			draft(first_player.hand);
+			draft(second_player.hand);
+
+			if (deque(first_player.hand) > deque(second_player.hand)) {
+				name = "Боб";
+			}
+			else {
+				name = "Алиса";
+			}
+			while (true) {
+				if (first_player.hand.size() == 0) {
+					cout << "Первый игрок победил! " << endl;
+					break;
+				}
+				else if (second_player.hand.size() == 0) {
+					cout << "Второй игрок победил! " << endl;
+					break;
+				}
+				else if ((first_player.hand.size() == 0) && (second_player.hand.size() == 0)) {
+					cout << "Ничья! " << endl;
+				}
+
+				if (name == "Алиса") {
+					if (toss_checker == 0) {
+						move(first_player.hand, name);
+						name = "Боб";
+					}
+					while (true) {
+						if (counter_move(second_player.hand, name)) {
+							if (toss(first_player.hand) != 1) {
+								table.clear();
+								toss_checker = 0;
+								break;
+							}
+							else {
+								toss_checker = 1;
+							}
+						}
+						else {
+							for (int i = 0; i < table.size(); i++) {
+								second_player.hand.push_back(table.at(i));
+							}
+							name = "Алиса";
+							toss_checker = 0;
+							table.clear();
+							break;
+						}
+					}
+
+				}
+				else if (name == "Боб") {
+					if (toss_checker == 0) {
+						move(second_player.hand, name);
+						name = "Алиса";
+					}
+					while (true) {
+						if (counter_move(first_player.hand, name)) {
+							if (toss(second_player.hand) == 0) {
+								table.clear();
+								break;
+							}
+
+						}
+						else {
+							for (int i = 0; i < table.size(); i++) {
+								first_player.hand.push_back(table.at(i));
+
+							}
+							name = "Боб";
+							toss_checker = 0;
+							table.clear();
+							break;
+						}
+					}
+
+				}
+				if (deck.size() != 0) {
+					draft(first_player.hand);
+				}
+				if (deck.size() != 0) {
+					draft(second_player.hand);
+				}
+			}
 		}
+		
 	
 };
 
 
+
+
 int main() {
 	setlocale(LC_ALL, "");
-
-	Game::launch();
+	Player first_player, second_player;
+	Game launcher;
+	launcher.start(first_player, second_player);
 	
 	return 0;
 }

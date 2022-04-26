@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <vector>
 #include <string>
@@ -6,4 +5,15 @@
 
 using namespace std;
 
+struct cards {
+	string names;
+	string suits;
+	int values;
+};
 
+class Player {
+	friend class Game;
+private:
+	vector<cards> hand;
+
+};
