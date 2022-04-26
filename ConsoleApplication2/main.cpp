@@ -23,20 +23,20 @@ private:
 	void start() {
 		string name;
 		int toss_checker = 0;
-		building();
-		shuffle();
-		trump_pick();
-		draft(first_player);
-		draft(second_player);
+		building(); //построение колоды
+		shuffle(); //перемешивание колоды
+		trump_pick(); //выбор козыря
+		draft(first_player); //раздача карт первому игроку
+		draft(second_player); //раздача карт второму игроку
 		
-		if (deque(first_player) > deque(second_player)) {
+		if (deque(first_player) > deque(second_player)) { //определение порядка ходов
 			name = "Боб";
 		}
 		else {
 			name = "Алиса";
 		}
 		while (true) {
-			if (first_player.size() == 0) {
+			if (first_player.size() == 0) { //условия победы
 				cout << "Первый игрок победил! " << endl;
 				break;
 			} else if (second_player.size() == 0) {
@@ -50,11 +50,11 @@ private:
 			if (name == "Алиса") {
 				while (true) {
 					if (toss_checker == 0) {
-						move(first_player, name);
+						move(first_player, name); //функция хода 
 						name = "Боб";
 					}
-					if (counter_move(second_player, name)) {
-						if (toss(first_player) != 1) {
+					if (counter_move(second_player, name)) { //функция битья 
+						if (toss(first_player) != 1) { //функция подкидывания
 							table.clear();
 							toss_checker = 0;
 							break;
@@ -101,10 +101,10 @@ private:
 				}
 				
 			} 
-			if (deck.size() != 0) {
+			if (deck.size() != 0) { //добор карт первому игроку
 				draft(first_player);
 			}
-			if (deck.size() != 0) {
+			if (deck.size() != 0) { //добор карт второму игроку
 				draft(second_player);
 			}
 		}
@@ -205,7 +205,7 @@ private:
 				table.push_back(hand.at(index - 1));
 				hand.erase(hand.begin() + (index - 1));
 				return 1;
-				//toss();
+
 			}
 			else {
 				cout << "Выберите другую карту " << endl;
@@ -258,9 +258,9 @@ private:
 		
 	}
 	public: 
-		static Game launch() {
+		static Game launch() { //создание статического объекта
 			static Game launcher;
-			launcher.start();
+			launcher.start(); //запуск игры
 			return launcher;
 		}
 	
