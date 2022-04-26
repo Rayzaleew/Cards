@@ -5,9 +5,6 @@ void Game::start(Player& first_player, Player& second_player) {
 
 	string name;
 	int toss_checker = 0;
-	building();
-	shuffle();
-	trump_pick();
 	draft(first_player.hand);
 	draft(second_player.hand);
 
@@ -93,19 +90,6 @@ void Game::start(Player& first_player, Player& second_player) {
 	}
 }
 
-void Game::building() {
-
-	for (int i = 0; i < suits.size(); i++) {
-		for (int j = 0; j < names.size(); j++) {
-			deck.push_back({ names[j], suits[i], j + 6 });
-
-		}
-	}
-}
-void Game::shuffle() {
-	srand(unsigned(time(NULL)));
-	random_shuffle(deck.begin(), deck.end());
-}
 void Game::draft(vector <cards>& hand) {
 	int n = 0;
 	for (vector <cards>::iterator i = hand.begin(); i != hand.end(); i++) {
@@ -119,18 +103,7 @@ void Game::draft(vector <cards>& hand) {
 		deck.erase(deck.begin());
 	}
 }
-void Game::trump_pick() {
-	trump = deck.at(0).suits;
-	cout << "Козырь: " << trump << endl;
-	deck.push_back(deck.front());
-	deck.erase(deck.begin());
-	for (int i = 0; i < deck.size(); i++) {
-		if (deck.at(i).suits == trump) {
-			deck.at(i).values += 9;
-		}
 
-	}
-}
 
 int Game::deque(vector <cards>& hand) {
 	int deque = 23;
