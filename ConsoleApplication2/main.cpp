@@ -1,9 +1,4 @@
-﻿#include <iostream>
-#include <vector>
-#include <string>
-#include<algorithm>
-
-using namespace std;
+﻿#include "Game.h"
 
 class Game {
 private:
@@ -15,8 +10,8 @@ private:
 	vector <cards> deck;
 	vector <string> names = { "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
 	vector <string> suits = { "Пики", "Крести", "Черви", "Буби" };
-	vector <cards> first_player;
-	vector <cards> second_player;
+	vector <cards> alisa_hand;
+	vector <cards> bob_hand;
 	vector <cards> table;
 	string trump;
 
@@ -26,35 +21,35 @@ private:
 		building();
 		shuffle();
 		trump_pick();
-		draft(first_player);
-		draft(second_player);
+		draft(alisa_hand);
+		draft(bob_hand);
 		
-		if (deque(first_player) > deque(second_player)) {
+		if (deque(alisa_hand) < deque(bob_hand)) {
 			name = "Боб";
 		}
 		else {
 			name = "Алиса";
 		}
 		while (true) {
-			if (first_player.size() == 0) {
+			if (alisa_hand.size() == 0) {
 				cout << "Первый игрок победил! " << endl;
 				break;
-			} else if (second_player.size() == 0) {
+			} else if (bob_hand.size() == 0) {
 				cout << "Второй игрок победил! " << endl;
 				break;
 			}
-			else if ((first_player.size() == 0) && (second_player.size() == 0)) {
+			else if ((alisa_hand.size() == 0) && (bob_hand.size() == 0)) {
 				cout << "Ничья! " << endl;
 			}
 			
 			if (name == "Алиса") {
 				while (true) {
 					if (toss_checker == 0) {
-						move(first_player, name);
+						move(alisa_hand, name);
 						name = "Боб";
 					}
-					if (counter_move(second_player, name)) {
-						if (toss(first_player) != 1) {
+					if (counter_move(bob_hand, name)) {
+						if (toss(alisa_hand) != 1) {
 							table.clear();
 							toss_checker = 0;
 							break;
@@ -65,7 +60,7 @@ private:
 					}
 					else {
 						for (int i = 0; i < table.size(); i++) {
-							second_player.push_back(table.at(i));
+							bob_hand.push_back(table.at(i));
 						}
 						name = "Алиса";
 						toss_checker = 0;
@@ -77,12 +72,12 @@ private:
 			}
 			else if (name == "Боб") {
 				if (toss_checker == 0) {
-					move(second_player, name);
+					move(bob_hand, name);
 					name = "Алиса";
 				}
 				while (true) {
-					if (counter_move(first_player, name)) {
-						if (toss(second_player) == 0) {
+					if (counter_move(alisa_hand, name)) {
+						if (toss(bob_hand) == 0) {
 							table.clear();
 							break;
 						}
@@ -90,7 +85,7 @@ private:
 					}
 					else {
 						for (int i = 0; i < table.size(); i++) {
-							first_player.push_back(table.at(i));
+							alisa_hand.push_back(table.at(i));
 							
 						}
 						name = "Боб";
@@ -102,10 +97,10 @@ private:
 				
 			} 
 			if (deck.size() != 0) {
-				draft(first_player);
+				draft(alisa_hand);
 			}
 			if (deck.size() != 0) {
-				draft(second_player);
+				draft(bob_hand);
 			}
 		}
 	}
@@ -152,7 +147,7 @@ private:
 	}
 
 	int deque(vector <cards> &hand) {
-		int deque = 14;
+		int deque = 23;
 		for (int i = 0; i < 6; i++) {
 			if ((hand.at(i).suits == trump) && (hand.at(i).values <= deque)) {
 				deque = hand.at(i).values;
